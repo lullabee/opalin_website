@@ -1,0 +1,224 @@
+:root {
+    --bg-color: #12181A;
+    --text-white: #FFFFFF;
+    --text-muted: rgba(255, 255, 255, 0.7);
+    --primary-color: #6AC6A9;
+    --primary-gradient: linear-gradient(135deg, #88d4bc 0%, #4ea988 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-white);
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+}
+
+h1, h2, .logo-text {
+    font-family: 'Rubik', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Effet lumineux d'arrière-plan */
+.glow-orb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(106, 198, 169, 0.07) 0%, rgba(18, 24, 26, 0) 70%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Header & Logo */
+header {
+    padding: 2.5rem 0;
+    position: relative;
+    z-index: 10;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.logo-icon {
+    font-family: 'Maven Pro', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(to bottom, #73DBA0, #65BBB0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+}
+
+.logo-text {
+    font-family: 'Rubik', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: var(--primary-color);
+    margin-left: 0.15em; /* Compensate for tracking */
+}
+
+/* Boutons */
+.btn-outline {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 50px;
+    color: var(--primary-color);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px rgba(106, 198, 169, 0.4);
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 1rem 2.25rem;
+    background: var(--primary-gradient);
+    border-radius: 50px;
+    color: var(--bg-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(106, 198, 169, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(106, 198, 169, 0.4);
+}
+
+.btn-large {
+    font-size: 1.25rem;
+    padding: 1.25rem 3rem;
+}
+
+/* Section Hero (Accueil) */
+.hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.hero-label {
+    position: relative;
+    z-index: 1;
+    font-family: 'Rubik', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.hero-title {
+    font-family: 'Rubik', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 800;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+    color: var(--text-white);
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-weight: 400;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.highlight {
+    color: var(--primary-color);
+}
+
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2.5rem 0;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Animations d'apparition */
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+.delay-3 { transition-delay: 0.45s; }
+
+/* Responsive complet */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .glow-orb {
+        width: 100%;
+        height: 400px;
+    }
+    
+    .hero {
+        min-height: 50vh;
+        padding: 2rem 0;
+    }
+    
+    .contact-card {
+        padding: 3rem 1.5rem;
+    }
+    
+    .contact-card h2 {
+        font-size: 2rem;
+    }
+}

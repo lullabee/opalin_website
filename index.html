@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opalin</title>
+    <meta name="description" content="Opalin - Innovative startup. Contact us to learn more.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <!-- J'ai recréé le visuel du logo en HTML/CSS pour qu'il soit net et réactif -->
+            <div class="logo">
+                <span class="logo-icon">O</span>
+                <span class="logo-text">OPALIN</span>
+            </div>
+            <nav>
+                <a href="mailto:contact@opalin.ai" class="btn-outline">Contact us</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-container">
+                <p class="hero-label fade-up highlight">
+                    <span class="glow-orb" aria-hidden="true"></span>
+                    OPALIN
+                </p>
+                <h1 class="hero-title fade-up delay-1">Physical intelligence for real-world operations.</h1>
+                <p class="hero-subtitle fade-up delay-2 highlight">Robotics for environments where reliability matters.</p>
+            </div>
+        </section>
+        
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Opalin. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple script pour déclencher les animations d'apparition au scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-up').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
