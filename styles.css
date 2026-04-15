@@ -150,9 +150,9 @@ header {
 .hero-title {
     font-family: 'Rubik', sans-serif;
     font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: 800;
+    font-weight: 500;
     margin-bottom: 2rem;
-    line-height: 1.1;
+    line-height: 1.3;
     color: var(--text-white);
     max-width: 1000px;
     margin-left: auto;
