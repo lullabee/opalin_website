@@ -124,11 +124,16 @@ header {
 .hero-label {
     position: relative;
     z-index: 1;
-    font-family: 'Rubik', sans-serif;
-    font-size: clamp(3rem, 6vw, 5rem);
-    font-weight: 800;
-    letter-spacing: 0.15em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 0.5rem;
+}
+
+.hero-mark-image {
+    display: block;
+    width: clamp(68px, 7vw, 110px);
+    height: auto;
 }
 
 .hero-title {
