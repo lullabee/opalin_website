@@ -378,18 +378,6 @@ footer {
     gap: 1rem;
 }
 
-.media-group + .media-group {
-    margin-top: 1.8rem;
-}
-
-.media-group-title {
-    font-size: 1rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--primary-color);
-    margin-bottom: 0.8rem;
-}
-
 .media-card {
     border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.09);
@@ -422,7 +410,7 @@ footer {
     padding: 0.15rem 0.55rem;
 }
 
-.media-meta h4 {
+.media-meta h3 {
     font-size: 1rem;
     margin-bottom: 0.3rem;
 }
