@@ -398,6 +398,18 @@ footer {
     padding: 0.95rem;
 }
 
+.media-category {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    border: 1px solid rgba(134, 206, 203, 0.45);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+}
+
 .media-meta h3 {
     font-size: 1rem;
     margin-bottom: 0.3rem;
