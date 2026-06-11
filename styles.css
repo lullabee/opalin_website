@@ -368,6 +368,16 @@ footer {
     margin-bottom: 1.5rem;
 }
 
+.secret-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.secret-header-actions .secret-link {
+    margin-left: 0;
+}
+
 .secret-content-header h2 {
     font-size: clamp(1.7rem, 2.8vw, 2.4rem);
 }
@@ -419,6 +429,112 @@ footer {
 .media-empty {
     color: var(--text-muted);
     font-size: 0.92rem;
+}
+
+.admin-layout {
+    display: grid;
+    gap: 1rem;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.admin-panel h3 {
+    margin-bottom: 0.6rem;
+}
+
+.admin-form {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.admin-form-row {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.admin-form-row label {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+}
+
+.admin-file-input {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-white);
+    padding: 0.55rem 0.65rem;
+}
+
+.admin-fieldset {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    padding: 0.6rem 0.7rem;
+}
+
+.admin-fieldset legend {
+    color: var(--text-muted);
+    font-size: 0.84rem;
+    padding: 0 0.35rem;
+}
+
+.source-option {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--text-white);
+    font-size: 0.92rem;
+}
+
+.source-option + .source-option {
+    margin-top: 0.45rem;
+}
+
+.admin-actions {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.admin-export-row {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.entry-list {
+    display: grid;
+    gap: 0.65rem;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 0.3rem;
+}
+
+.entry-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.7rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.entry-summary p {
+    margin-top: 0.18rem;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+}
+
+.btn-small {
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.83rem;
+    align-self: flex-start;
 }
 
 /* Animations d'apparition */

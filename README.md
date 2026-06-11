@@ -54,3 +54,20 @@ Use `secret-media.json` as the media list source. The secret page reads this fil
 3. Keep only key local backup files in `assets/secret-media/`.
 
 If you want direct browser uploads without committing media to git, Cloudinary unsigned upload presets are the simplest next step.
+
+## Private media admin page
+
+Use `secret-admin.html` to manage video entries behind the same password gate.
+
+What it does:
+
+1. Unlocks with the same SHA-256 password flow as `secret.html`.
+2. Loads the current `secret-media.json`.
+3. Lets you add video entries with qualifiers (`id`, `type`, `category`, `title`, `src`, `poster`, `about`).
+4. Exports updated JSON via copy or download.
+
+Important for this static repo:
+
+- Browser file pickers cannot write files into this git repository automatically.
+- After adding local files in admin mode, upload/copy them into `assets/secret-media/`.
+- Replace the repository `secret-media.json` with the exported one.
