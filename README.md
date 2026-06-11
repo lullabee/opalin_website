@@ -17,7 +17,7 @@ In `secret.html`, replace `SECRET_HASH` with the SHA-256 hash of your own passwo
 You can generate the hash in your browser console:
 
 ```js
-const pwd = 'your-new-password';
+const pwd = 'your-new-password'.trim();
 const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
 const hash = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('');
 console.log(hash);
