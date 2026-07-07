@@ -31,7 +31,7 @@ const FOG = "#9ec0bd";
 const TUNNEL_DEPTH = ((RING_COUNT - 1) * (SPACING_START + SPACING_END)) / 2;
 const Z_HERO = 9.5; // camera rests here → the logo "O" reads as the hero mark
 const Z_ENTER = 1.1; // end of the zoom → we're right at the "O"
-const Z_END = -TUNNEL_DEPTH + 1.4; // settles among the last rings
+const Z_END = -TUNNEL_DEPTH - 2.4; // settles past the last ring — none left in frame
 
 /* Real Opalin logo (CAD export). Scaled so the "O" stands LOGO_HEIGHT tall;
    at that size the inner hole is ~1.24 half-width — wide enough for the
