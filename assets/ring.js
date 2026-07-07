@@ -47,6 +47,11 @@ const REVEAL_END = 0.34; // tunnel fully present
 /* matches drei ScrollControls damping={0.28} (smooth-time seconds) */
 const SCROLL_DAMP = 7;
 
+/* raises the hero "O" above screen center so the logo + wordmark block reads
+   vertically centered; fades out during the dive so the camera still flies
+   through the ring's middle */
+const HERO_LIFT = 0.6;
+
 function buildRings() {
   const rings = [];
   let z = 0;
@@ -234,7 +239,7 @@ if (renderer) {
     0.1,
     120
   );
-  camera.position.set(0, 0, Z_HERO);
+  camera.position.set(0, -HERO_LIFT, Z_HERO);
 
   /* ─── Studio environment + light at the end of the tunnel ──────────────
      Equivalent of drei's <Environment> with Lightformers: emissive planes in
@@ -459,11 +464,15 @@ if (renderer) {
     const driftY =
       (Math.cos(t * 0.21) * 0.14 + Math.cos(off * Math.PI * 2) * 0.28) * dive;
 
+    // translate camera and look target down together (no tilt) so the hero
+    // appears above screen center; collapses to 0 as the dive begins
+    const lift = HERO_LIFT * (1 - dive);
+
     camera.position.x = damp(camera.position.x, driftX, 4, delta);
-    camera.position.y = damp(camera.position.y, driftY, 4, delta);
+    camera.position.y = damp(camera.position.y, driftY - lift, 4, delta);
     camera.position.z = z;
 
-    lookTarget.set(driftX * 0.35, driftY * 0.35, z - 9);
+    lookTarget.set(driftX * 0.35, driftY * 0.35 - lift, z - 9);
     camera.lookAt(lookTarget);
     camera.rotation.z =
       (Math.sin(off * Math.PI * 2.5) * 0.12 + Math.sin(t * 0.3) * 0.02) * dive;
