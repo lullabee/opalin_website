@@ -6,57 +6,72 @@
     <title>Opalin</title>
     <meta name="description" content="Opalin - Contact us to learn more.">
     <link rel="icon" type="image/png" href="assets/logoO.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ring.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "./assets/vendor/three.module.js",
+        "three/addons/loaders/OBJLoader.js": "./assets/vendor/OBJLoader.js",
+        "three/addons/utils/BufferGeometryUtils.js": "./assets/vendor/BufferGeometryUtils.js",
+        "postprocessing": "./assets/vendor/postprocessing.js"
+      }
+    }
+    </script>
 </head>
 <body>
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <img src="assets/OpalinLogoExploded.png" alt="Opalin" class="logo-image">
-            </div>
-            <nav>
-                <a href="mailto:contact@opalin.ai" class="btn-outline">Contact us</a>
-            </nav>
+    <!-- gives the page its 4-screen scroll range; the canvas is fixed behind -->
+    <div class="scroll-space" aria-hidden="true"></div>
+
+    <div class="wrap">
+        <canvas id="scene"></canvas>
+    </div>
+
+    <!-- corner brand — fades in after the dive -->
+    <header id="overlay-header" class="header" style="opacity: 0">
+        <div class="brand">
+            <img src="assets/opalin-o.webp" alt="" class="brand-mark">
+            <span class="brand-text">Opalin</span>
         </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="container hero-container">
-                <p class="hero-label fade-up highlight">
-                    <span class="glow-orb" aria-hidden="true"></span>
-                    <img src="assets/logoO.png" alt="Opalin logo mark" class="hero-mark-image">
-                </p>
-                <h1 class="hero-title fade-up delay-1">Physical world intelligence for real-world operations</h1>
-                <p class="hero-subtitle fade-up delay-2 highlight">Robotics for environments where reliability matters.</p>
-            </div>
-        </section>
-        
+    <!-- always-visible actions -->
+    <div class="top-actions">
+        <a class="nav" href="mailto:contact@opalin.ai">Contact us</a>
+        <button id="sound-toggle" class="nav" type="button">Sound: On</button>
+    </div>
 
-    </main>
+    <!-- hero lockup beneath the 3D "O" -->
+    <div id="hero-lockup" class="hero-lockup" style="opacity: 1">
+        <span class="wordmark">Opalin</span>
+        <span class="tagline">Precision · Intelligence · Form</span>
+    </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Opalin. All rights reserved. <a href="careers.html" class="secret-link" aria-label="Careers">•</a><a href="secret.html" class="secret-link" aria-label="Private vault">•</a><a href="secret-admin.html" class="secret-link" aria-label="Private admin">•</a></p>
-        </div>
+    <!-- scroll hint -->
+    <div id="scroll-hint" class="hint" style="opacity: 1">
+        <span>Scroll to enter</span>
+        <div class="hint-line"></div>
+    </div>
+
+    <!-- closing card at the deep end of the tunnel -->
+    <div id="final-card" class="hero" style="opacity: 0; visibility: hidden">
+        <img src="assets/opalin-o.webp" alt="Opalin" class="hero-mark">
+        <h1 class="hero-title">
+            Precision in motion.
+            <br>
+            Engineered by Opalin.
+        </h1>
+        <p class="hero-sub">Robotics · Intelligence · Form</p>
+        <a class="cta" href="mailto:contact@opalin.ai">Contact us</a>
+    </div>
+
+    <footer class="corner-footer">
+        <span>&copy; 2026 Opalin</span>
+        <a href="careers.html" class="secret-link" aria-label="Careers">&bull;</a><a href="secret.html" class="secret-link" aria-label="Private vault">&bull;</a><a href="secret-admin.html" class="secret-link" aria-label="Private admin">&bull;</a>
     </footer>
 
-    <script>
-        // Simple script pour déclencher les animations d'apparition au scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.fade-up').forEach(element => {
-            observer.observe(element);
-        });
-    </script>
+    <script type="module" src="assets/ring.js"></script>
 </body>
 </html>
