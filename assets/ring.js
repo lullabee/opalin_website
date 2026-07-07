@@ -1,6 +1,6 @@
 /* Opalin ring fly-through landing — vanilla Three.js port of the
    opalin-hologram RingTunnel prototype (React Three Fiber original).
-   Same colors, layout, materials, camera choreography and audio. */
+   Same colors, layout, materials and camera choreography. */
 
 import * as THREE from "three";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -100,114 +100,6 @@ const glass = {
   attenuationDistance: 2.6,
   envMapIntensity: 1.7,
 };
-
-/* ─── Procedural "whoosh" — no audio assets, everything is synthesized:
-   a band-pass swept noise burst (the air) plus a quiet gliding sine
-   (the futuristic accent). ─────────────────────────────────────────────── */
-class WhooshEngine {
-  constructor() {
-    this.ctx = null;
-    this.master = null;
-    this.noise = null;
-    this.lastPlay = 0;
-    this.enabled = true;
-  }
-
-  /** Create or resume the context. Call from any user gesture. */
-  unlock() {
-    if (typeof window === "undefined") return;
-    if (!this.ctx) {
-      if (!window.AudioContext) return;
-      this.ctx = new AudioContext();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = 0.6;
-      this.master.connect(this.ctx.destination);
-      // one second of white noise, generated once and reused
-      const len = this.ctx.sampleRate;
-      this.noise = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
-      const data = this.noise.getChannelData(0);
-      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
-    }
-    if (this.ctx.state === "suspended") void this.ctx.resume();
-  }
-
-  setEnabled(on) {
-    this.enabled = on;
-    if (on) this.unlock();
-  }
-
-  /** True once the browser has actually allowed audio to play. */
-  isRunning() {
-    return this.ctx?.state === "running";
-  }
-
-  /** Fire one whoosh; intensity 0..1 scales loudness, brightness, length. */
-  play(intensity = 0.5) {
-    if (!this.enabled) return;
-    this.unlock();
-    const ctx = this.ctx;
-    if (!ctx || !this.master || !this.noise || ctx.state !== "running") return;
-
-    const now = ctx.currentTime;
-    if (now - this.lastPlay < 0.09) return; // don't machine-gun on fast scroll
-    this.lastPlay = now;
-
-    const i = Math.min(1, Math.max(0.15, intensity));
-    const dur = 0.45 + i * 0.3;
-
-    // shared subtle stereo placement per whoosh
-    const pan = ctx.createStereoPanner();
-    pan.pan.value = (Math.random() - 0.5) * 0.5;
-    pan.connect(this.master);
-
-    // air layer: looped noise through a rising-then-falling band-pass
-    const src = ctx.createBufferSource();
-    src.buffer = this.noise;
-    src.loop = true;
-    src.playbackRate.value = 0.85 + Math.random() * 0.3;
-
-    const band = ctx.createBiquadFilter();
-    band.type = "bandpass";
-    band.Q.value = 0.9;
-    const f0 = 180 + Math.random() * 60;
-    const fPeak = 900 + i * 900 + Math.random() * 200;
-    band.frequency.setValueAtTime(f0, now);
-    band.frequency.exponentialRampToValueAtTime(fPeak, now + dur * 0.35);
-    band.frequency.exponentialRampToValueAtTime(f0 * 1.4, now + dur);
-
-    const lp = ctx.createBiquadFilter();
-    lp.type = "lowpass";
-    lp.frequency.value = 4200;
-
-    const amp = ctx.createGain();
-    amp.gain.setValueAtTime(0.0001, now);
-    amp.gain.exponentialRampToValueAtTime(0.06 + 0.28 * i, now + dur * 0.3);
-    amp.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-
-    src.connect(band);
-    band.connect(lp);
-    lp.connect(amp);
-    amp.connect(pan);
-    src.start(now);
-    src.stop(now + dur + 0.05);
-
-    // accent layer: quiet high sine gliding down — reads as "sci-fi"
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(1900 + Math.random() * 250, now);
-    osc.frequency.exponentialRampToValueAtTime(760, now + dur * 0.9);
-
-    const accent = ctx.createGain();
-    accent.gain.setValueAtTime(0.0001, now);
-    accent.gain.exponentialRampToValueAtTime(0.012 + 0.05 * i, now + 0.05);
-    accent.gain.exponentialRampToValueAtTime(0.0001, now + dur * 0.9);
-
-    osc.connect(accent);
-    accent.connect(pan);
-    osc.start(now);
-    osc.stop(now + dur);
-  }
-}
 
 /* ─── Renderer / scene / camera ──────────────────────────────────────────── */
 const canvas = document.getElementById("scene");
@@ -364,33 +256,6 @@ if (renderer) {
     return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
   }
 
-  /* ─── Audio + sound toggle ─────────────────────────────────────────────── */
-  const whoosh = new WhooshEngine();
-  let soundOn = true;
-  const soundToggle = document.getElementById("sound-toggle");
-
-  // Browsers only allow audio after a real user gesture (click/tap/key —
-  // wheel scrolling does NOT count), so try to unlock on all of them; the
-  // wheel attempt starts working once the user has interacted at least once.
-  const unlock = () => whoosh.unlock();
-  for (const e of ["pointerdown", "pointerup", "click", "touchstart", "touchend", "keydown", "wheel"]) {
-    window.addEventListener(e, unlock, { passive: true });
-  }
-
-  soundToggle.addEventListener("click", () => {
-    // if the browser hasn't let audio start yet, the first click means
-    // "turn sound on", not "mute" — unlock and confirm audibly
-    if (soundOn && !whoosh.isRunning()) {
-      whoosh.unlock();
-      setTimeout(() => whoosh.play(0.5), 120);
-      return;
-    }
-    soundOn = !soundOn;
-    whoosh.setEnabled(soundOn);
-    soundToggle.textContent = `Sound: ${soundOn ? "On" : "Off"}`;
-    if (soundOn) setTimeout(() => whoosh.play(0.5), 120);
-  });
-
   /* ─── DOM overlay refs ─────────────────────────────────────────────────── */
   const overlay = {
     header: document.getElementById("overlay-header"),
@@ -403,8 +268,6 @@ if (renderer) {
   };
 
   /* ─── Frame loop: tunnel + camera rig + overlay choreography ───────────── */
-  const ringZs = buildRings().map((r) => r.z); // hero included — whoosh planes
-  let prevZ = null;
   const lookTarget = new THREE.Vector3();
   const clock = new THREE.Clock();
 
@@ -445,19 +308,6 @@ if (renderer) {
 
     // camera rig
     const z = cameraZ(off);
-
-    // ring pass-through detection (works in both scroll directions)
-    if (prevZ !== null && z !== prevZ) {
-      const lo = Math.min(prevZ, z);
-      const hi = Math.max(prevZ, z);
-      let crossed = 0;
-      for (const rz of ringZs) if (rz > lo && rz <= hi) crossed++;
-      if (crossed > 0) {
-        const speed = Math.abs(z - prevZ);
-        whoosh.play(Math.min(1, 0.35 + speed * 0.9 + (crossed - 1) * 0.15));
-      }
-    }
-    prevZ = z;
 
     const driftX =
       (Math.sin(t * 0.25) * 0.18 + Math.sin(off * Math.PI * 3) * 0.4) * dive;

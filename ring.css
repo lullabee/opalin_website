@@ -99,7 +99,7 @@ body {
   opacity: 1;
 }
 
-/* always-visible actions in the top-right corner: contact + sound toggle */
+/* always-visible actions in the top-right corner */
 .top-actions {
   position: fixed;
   top: 26px;
