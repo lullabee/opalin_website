@@ -50,7 +50,7 @@ const SCROLL_DAMP = 7;
 /* raises the hero "O" above screen center so the logo + wordmark block reads
    vertically centered; fades out during the dive so the camera still flies
    through the ring's middle */
-const HERO_LIFT = 0.6;
+const HERO_LIFT = 0.85;
 
 function buildRings() {
   const rings = [];

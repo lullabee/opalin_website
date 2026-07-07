@@ -156,7 +156,7 @@ body {
 .hint {
   position: fixed;
   left: 50%;
-  bottom: 28px;
+  bottom: 76px;
   transform: translateX(-50%);
   z-index: 15;
   display: flex;
