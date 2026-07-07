@@ -115,7 +115,8 @@ body {
 .hero-lockup {
   position: fixed;
   left: 50%;
-  bottom: max(12vh, 112px);
+  /* +7vh matches HERO_LIFT on the 3D logo — same gap, whole block higher */
+  bottom: max(19vh, 172px);
   transform: translateX(-50%);
   z-index: 15;
   display: flex;
@@ -307,7 +308,7 @@ body {
 /* Short viewports — shrink the lockup so it stays clear of the 3D logo */
 @media (max-height: 780px) {
   .hero-lockup {
-    bottom: max(11vh, 96px);
+    bottom: max(18vh, 150px);
     gap: 10px;
   }
 
