@@ -73,15 +73,38 @@ function buildRings() {
   return rings;
 }
 
-/* camera z as a function of scroll: dwell at hero → zoom in → fly through */
+/* camera z as a function of scroll: dwell at hero → zoom in → fly through.
+   The zoom and fly segments are cubic Hermite curves that share one non-zero
+   velocity at the hand-off — two chained smoothsteps both hit zero velocity
+   at ZOOM_END, which stalled the camera at the "O" and read as a hitch. */
+const ZOOM_SPAN = ZOOM_END - HERO_END;
+const FLY_SPAN = 1 - ZOOM_END;
+const V_ZOOM = (Z_ENTER - Z_HERO) / ZOOM_SPAN; // avg zoom velocity
+const V_FLY = (Z_END - Z_ENTER) / FLY_SPAN; // avg fly velocity
+/* harmonic mean sits between the two averages and stays under 3× either one,
+   which keeps both cubics monotone — the camera never backtracks */
+const V_SEAM = (2 * V_ZOOM * V_FLY) / (V_ZOOM + V_FLY);
+
+/* cubic Hermite on t ∈ [0,1]; tangents m0/m1 pre-scaled by the segment span */
+function hermite(t, p0, p1, m0, m1) {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return (
+    (2 * t3 - 3 * t2 + 1) * p0 +
+    (t3 - 2 * t2 + t) * m0 +
+    (-2 * t3 + 3 * t2) * p1 +
+    (t3 - t2) * m1
+  );
+}
+
 function cameraZ(off) {
   if (off < HERO_END) return Z_HERO;
   if (off < ZOOM_END) {
-    const t = smoothstep((off - HERO_END) / (ZOOM_END - HERO_END), 0, 1);
-    return lerp(Z_HERO, Z_ENTER, t);
+    const t = (off - HERO_END) / ZOOM_SPAN;
+    return hermite(t, Z_HERO, Z_ENTER, 0, V_SEAM * ZOOM_SPAN);
   }
-  const t = smoothstep((off - ZOOM_END) / (1 - ZOOM_END), 0, 1);
-  return lerp(Z_ENTER, Z_END, t);
+  const t = Math.min((off - ZOOM_END) / FLY_SPAN, 1);
+  return hermite(t, Z_ENTER, Z_END, V_SEAM * FLY_SPAN, 0);
 }
 
 /* shared teal-glass material props for every ring */
