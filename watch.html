@@ -11,6 +11,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+    <!-- Google Analytics 4 (same property as the rest of the site) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RYR98ET091"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        // We track opens via a custom event (below), not the URL, so the
+        // access key in the "#" fragment is never sent to Google.
+        gtag('config', 'G-RYR98ET091');
+    </script>
 </head>
 <body class="secret-page">
     <header>
@@ -155,7 +166,7 @@
                 if (response.status === 404) {
                     fail('This link is no longer active',
                         'This access link doesn’t exist or has been revoked. Contact the person who shared it with you.');
-                    trackEvent('screening_revoked_key');
+                    trackEvent('screening_revoked_key', { access_key: key });
                     return;
                 }
                 if (!response.ok) throw new Error('Unexpected status ' + response.status);
@@ -179,7 +190,7 @@
                 if (!isNaN(expiresAt) && expiresAt.getTime() < Date.now()) {
                     fail('This link has expired',
                         'This screening link is past its expiry date. Contact the person who shared it with you for a new one.');
-                    trackEvent('screening_expired_key');
+                    trackEvent('screening_expired_key', { access_key: key });
                     return;
                 }
             }
@@ -198,12 +209,21 @@
                 fail('Video unavailable',
                     'The video for this link could not be loaded. Contact the person who shared it with you.');
             });
+            // "recipient" is the human label you set in the generator; it makes
+            // GA reports readable ("Jane at Acme") instead of a random key.
+            const recipient = entry.label || entry.title || key;
+            const eventProps = {
+                access_key: key,
+                recipient: recipient,
+                video_title: entry.title || ''
+            };
+
             videoPlayer.addEventListener('play', () => {
-                trackEvent('screening_play', { key: key, title: entry.title || '' });
+                trackEvent('screening_play', eventProps);
             }, { once: true });
 
             show(videoState);
-            trackEvent('screening_view', { key: key, title: entry.title || '' });
+            trackEvent('screening_view', eventProps);
         }
 
         // React to someone pasting a different key into the same tab.

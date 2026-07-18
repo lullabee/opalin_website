@@ -132,6 +132,9 @@
         // The object that becomes assets/links/<key>.json (no key inside it).
         function fileContent(item) {
             const obj = { title: item.title, src: item.src };
+            // "label" is the recipient name — sent to Google Analytics so you
+            // can see, per person, who opened and played the video.
+            if (item.recipient) obj.label = item.recipient;
             if (item.about) obj.about = item.about;
             if (item.category) obj.category = item.category;
             if (item.expires) obj.expires = item.expires;
