@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Opalin - Private Link Generator</title>
+    <meta name="description" content="Generate personal screening links for Opalin.">
+    <link rel="icon" type="image/png" href="assets/logoO.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+</head>
+<body class="secret-page">
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="assets/OpalinLogoExploded.png" alt="Opalin" class="logo-image">
+            </div>
+            <nav>
+                <a href="index.html" class="btn-outline">Back to site</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="secret-gate-section">
+            <div class="container">
+                <div class="secret-gate-card">
+                    <p class="secret-eyebrow">Private tools</p>
+                    <h1 class="secret-title">Personal link generator</h1>
+                    <p class="secret-subtitle">
+                        Create a unique, unguessable link for one person. Each person gets their own key —
+                        the video is only reachable through <code>watch.html</code> with a valid key.
+                    </p>
+
+                    <form id="genForm" class="admin-form" autocomplete="off">
+                        <div class="admin-form-row">
+                            <label for="recipient">Who is this link for? (label — for your reference only)</label>
+                            <input id="recipient" class="admin-file-input" type="text" placeholder="e.g. Jane at Acme" required>
+                        </div>
+                        <div class="admin-form-row">
+                            <label for="src">Video path (in this repo, or a full URL)</label>
+                            <input id="src" class="admin-file-input" type="text" value="assets/secret-media/unfolding.mp4" required>
+                        </div>
+                        <div class="admin-form-row">
+                            <label for="title">Title shown on the page</label>
+                            <input id="title" class="admin-file-input" type="text" placeholder="e.g. Autonomous unfolding demo">
+                        </div>
+                        <div class="admin-form-row">
+                            <label for="about">Short description (optional)</label>
+                            <input id="about" class="admin-file-input" type="text" placeholder="One line about the clip">
+                        </div>
+                        <div class="admin-form-row">
+                            <label for="category">Category tag (optional)</label>
+                            <input id="category" class="admin-file-input" type="text" placeholder="e.g. Autonomous Manipulation">
+                        </div>
+                        <div class="admin-form-row">
+                            <label for="expires">Expiry date (optional — link stops working after this date)</label>
+                            <input id="expires" class="admin-file-input" type="date">
+                        </div>
+                        <button type="submit" class="btn-primary">Generate link</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="secret-content" id="results" hidden>
+            <div class="container">
+                <div class="secret-content-header">
+                    <div>
+                        <p class="secret-eyebrow">Generated</p>
+                        <h2>Your personal links</h2>
+                    </div>
+                    <div class="secret-header-actions">
+                        <button id="clearBtn" class="btn-outline btn-small" type="button">Clear list</button>
+                    </div>
+                </div>
+
+                <p class="secret-note" style="margin-top:0;">
+                    For each link below: <strong>1.</strong> Download its <code>.json</code> file into
+                    <code>assets/links/</code> and commit it. <strong>2.</strong> Send the person their link.
+                    To revoke access later, just delete that <code>.json</code> file.
+                </p>
+
+                <div id="entryList" class="entry-list" style="max-height:none; margin-top:1rem;"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Opalin. Private content.</p>
+        </div>
+    </footer>
+
+    <script>
+        const STORE_KEY = 'opalin_screening_links';
+        const genForm = document.getElementById('genForm');
+        const results = document.getElementById('results');
+        const entryList = document.getElementById('entryList');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // Generate an unguessable key: 24 random bytes -> base64url (~32 chars).
+        function generateKey() {
+            const bytes = new Uint8Array(24);
+            crypto.getRandomValues(bytes);
+            let bin = '';
+            bytes.forEach((b) => { bin += String.fromCharCode(b); });
+            return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        function load() {
+            try {
+                return JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function save(list) {
+            localStorage.setItem(STORE_KEY, JSON.stringify(list));
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, (c) => (
+                { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+            ));
+        }
+
+        // The object that becomes assets/links/<key>.json (no key inside it).
+        function fileContent(item) {
+            const obj = { title: item.title, src: item.src };
+            if (item.about) obj.about = item.about;
+            if (item.category) obj.category = item.category;
+            if (item.expires) obj.expires = item.expires;
+            return JSON.stringify(obj, null, 2);
+        }
+
+        function watchLink(key) {
+            return new URL('watch.html', window.location.href).href + '#' + key;
+        }
+
+        async function copyText(text, btn) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const original = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = original; }, 1400);
+            } catch (e) {
+                window.prompt('Copy this:', text);
+            }
+        }
+
+        function downloadFile(filename, text) {
+            const blob = new Blob([text], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function render() {
+            const list = load();
+            results.hidden = list.length === 0;
+            entryList.innerHTML = '';
+
+            list.slice().reverse().forEach((item) => {
+                const link = watchLink(item.key);
+                const filename = item.key + '.json';
+                const json = fileContent(item);
+
+                const el = document.createElement('div');
+                el.className = 'entry-item';
+                el.style.flexDirection = 'column';
+                el.innerHTML =
+                    '<div class="entry-summary" style="width:100%">' +
+                        '<strong>' + escapeHtml(item.recipient) + '</strong>' +
+                        (item.expires ? ' <span class="media-category">expires ' + escapeHtml(item.expires) + '</span>' : '') +
+                        '<p style="word-break:break-all; color:var(--primary-color)">' + escapeHtml(link) + '</p>' +
+                        '<p>File to commit: <code>assets/links/' + escapeHtml(filename) + '</code></p>' +
+                    '</div>';
+
+                const actions = document.createElement('div');
+                actions.className = 'admin-export-row';
+                actions.style.marginTop = '0.6rem';
+
+                const copyLinkBtn = document.createElement('button');
+                copyLinkBtn.className = 'btn-primary btn-small';
+                copyLinkBtn.type = 'button';
+                copyLinkBtn.textContent = 'Copy link';
+                copyLinkBtn.addEventListener('click', () => copyText(link, copyLinkBtn));
+
+                const dlBtn = document.createElement('button');
+                dlBtn.className = 'btn-outline btn-small';
+                dlBtn.type = 'button';
+                dlBtn.textContent = 'Download ' + filename;
+                dlBtn.addEventListener('click', () => downloadFile(filename, json));
+
+                const copyJsonBtn = document.createElement('button');
+                copyJsonBtn.className = 'btn-outline btn-small';
+                copyJsonBtn.type = 'button';
+                copyJsonBtn.textContent = 'Copy JSON';
+                copyJsonBtn.addEventListener('click', () => copyText(json, copyJsonBtn));
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'btn-outline btn-small';
+                removeBtn.type = 'button';
+                removeBtn.textContent = 'Remove from list';
+                removeBtn.addEventListener('click', () => {
+                    save(load().filter((x) => x.key !== item.key));
+                    render();
+                });
+
+                actions.appendChild(copyLinkBtn);
+                actions.appendChild(dlBtn);
+                actions.appendChild(copyJsonBtn);
+                actions.appendChild(removeBtn);
+                el.appendChild(actions);
+                entryList.appendChild(el);
+            });
+        }
+
+        genForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const item = {
+                key: generateKey(),
+                recipient: document.getElementById('recipient').value.trim(),
+                src: document.getElementById('src').value.trim(),
+                title: document.getElementById('title').value.trim(),
+                about: document.getElementById('about').value.trim(),
+                category: document.getElementById('category').value.trim(),
+                expires: document.getElementById('expires').value.trim()
+            };
+            const list = load();
+            list.push(item);
+            save(list);
+            render();
+            genForm.reset();
+            document.getElementById('src').value = item.src; // keep last video path handy
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (window.confirm('Clear the local list? This only clears this page — it does not revoke any links.')) {
+                save([]);
+                render();
+            }
+        });
+
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Opalin - Private Screening</title>
+    <meta name="description" content="Private video screening for Opalin.">
+    <link rel="icon" type="image/png" href="assets/logoO.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro:wght@900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+</head>
+<body class="secret-page">
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="assets/OpalinLogoExploded.png" alt="Opalin" class="logo-image">
+            </div>
+            <nav>
+                <a href="index.html" class="btn-outline">Back to site</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="secret-gate-section">
+            <div class="container">
+                <!-- Checking the link -->
+                <div class="secret-gate-card" id="loadingState">
+                    <p class="secret-eyebrow">Private access</p>
+                    <h1 class="secret-title">Opening your screening…</h1>
+                    <p class="secret-subtitle">Checking your personal link.</p>
+                </div>
+
+                <!-- No / bad key -->
+                <div class="secret-gate-card" id="errorState" hidden>
+                    <p class="secret-eyebrow">Private access</p>
+                    <h1 class="secret-title" id="errorTitle">This link isn't valid</h1>
+                    <p class="secret-subtitle" id="errorMessage">
+                        You need a personal access link to view this video. If you were sent one,
+                        open it exactly as it was shared with you — the whole link, including the part after the “#”.
+                    </p>
+                    <p class="secret-note">If you believe this is a mistake, contact the person who shared it with you.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- The video, once the key resolves -->
+        <section class="secret-content" id="videoState" hidden>
+            <div class="container">
+                <div class="secret-content-header">
+                    <div>
+                        <p class="secret-eyebrow">Private screening</p>
+                        <h2 id="videoTitle">Video</h2>
+                    </div>
+                </div>
+
+                <div class="media-grid">
+                    <article class="media-card" style="grid-column: 1 / -1;">
+                        <video id="videoPlayer"
+                               controls
+                               playsinline
+                               preload="metadata"
+                               controlsList="nodownload noplaybackrate"
+                               disablePictureInPicture
+                               style="height:auto; max-height:78vh; aspect-ratio:16/9;"></video>
+                        <div class="media-meta">
+                            <span class="media-category" id="videoCategory" hidden></span>
+                            <p id="videoAbout"></p>
+                        </div>
+                    </article>
+                </div>
+
+                <p class="secret-note">This link is personal to you. Please don't forward it.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Opalin. Private content.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ------------------------------------------------------------------
+        // Private screening viewer.
+        //
+        // The access key lives in the URL *fragment* (after "#"), e.g.
+        //   watch.html#aB3xY9-kQ7...
+        // Browsers never send the fragment to the server, so the key does not
+        // leak into server logs or analytics. Each key maps to its own file at
+        //   assets/links/<key>.json
+        // There is no master index, so keys can't be discovered by listing.
+        // To revoke someone, delete their assets/links/<key>.json file.
+        // ------------------------------------------------------------------
+
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const videoState = document.getElementById('videoState');
+        const errorTitle = document.getElementById('errorTitle');
+        const errorMessage = document.getElementById('errorMessage');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoAbout = document.getElementById('videoAbout');
+        const videoCategory = document.getElementById('videoCategory');
+
+        function show(el) {
+            loadingState.hidden = el !== loadingState;
+            errorState.hidden = el !== errorState;
+            videoState.hidden = el !== videoState;
+        }
+
+        function fail(title, message) {
+            if (title) errorTitle.textContent = title;
+            if (message) errorMessage.textContent = message;
+            show(errorState);
+        }
+
+        function trackEvent(eventName, props) {
+            if (typeof window.gtag === 'function') {
+                window.gtag('event', eventName, props || {});
+            }
+        }
+
+        // Only allow the characters we mint keys from. This also blocks any
+        // path-traversal attempt (no ".", "/", etc.) before we build a URL.
+        function readKey() {
+            const raw = (window.location.hash || '').replace(/^#/, '').trim();
+            if (!raw) return null;
+            return /^[A-Za-z0-9_-]{16,128}$/.test(raw) ? raw : false;
+        }
+
+        async function main() {
+            const key = readKey();
+
+            if (key === null) {
+                fail('You need an access link',
+                    'This page is only viewable through a personal link. Please use the link you were sent.');
+                trackEvent('screening_no_key');
+                return;
+            }
+            if (key === false) {
+                fail("This link isn't valid",
+                    'The access key in this link looks malformed. Please open the exact link you were sent.');
+                trackEvent('screening_bad_key');
+                return;
+            }
+
+            let entry;
+            try {
+                const response = await fetch('assets/links/' + key + '.json', { cache: 'no-store' });
+                if (response.status === 404) {
+                    fail('This link is no longer active',
+                        'This access link doesn’t exist or has been revoked. Contact the person who shared it with you.');
+                    trackEvent('screening_revoked_key');
+                    return;
+                }
+                if (!response.ok) throw new Error('Unexpected status ' + response.status);
+                entry = await response.json();
+            } catch (err) {
+                fail('Something went wrong',
+                    'We couldn’t load your screening right now. Please try again in a moment.');
+                trackEvent('screening_load_error');
+                return;
+            }
+
+            if (!entry || !entry.src) {
+                fail('This link is misconfigured',
+                    'There’s no video attached to this link yet. Contact the person who shared it with you.');
+                return;
+            }
+
+            // Optional expiry support: { "expires": "2026-12-31" }
+            if (entry.expires) {
+                const expiresAt = new Date(entry.expires);
+                if (!isNaN(expiresAt) && expiresAt.getTime() < Date.now()) {
+                    fail('This link has expired',
+                        'This screening link is past its expiry date. Contact the person who shared it with you for a new one.');
+                    trackEvent('screening_expired_key');
+                    return;
+                }
+            }
+
+            document.title = 'Opalin - ' + (entry.title || 'Private Screening');
+            videoTitle.textContent = entry.title || 'Private screening';
+            videoAbout.textContent = entry.about || '';
+            if (entry.category) {
+                videoCategory.textContent = entry.category;
+                videoCategory.hidden = false;
+            }
+            if (entry.poster) videoPlayer.poster = entry.poster;
+            videoPlayer.src = entry.src;
+
+            videoPlayer.addEventListener('error', () => {
+                fail('Video unavailable',
+                    'The video for this link could not be loaded. Contact the person who shared it with you.');
+            });
+            videoPlayer.addEventListener('play', () => {
+                trackEvent('screening_play', { key: key, title: entry.title || '' });
+            }, { once: true });
+
+            show(videoState);
+            trackEvent('screening_view', { key: key, title: entry.title || '' });
+        }
+
+        // React to someone pasting a different key into the same tab.
+        window.addEventListener('hashchange', main);
+        main();
+    </script>
+</body>
+</html>
