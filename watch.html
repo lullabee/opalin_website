@@ -206,12 +206,20 @@
             });
             // "recipient" is the human label you set in the generator; it makes
             // GA reports readable ("Jane at Acme") instead of a random key.
-            const recipient = entry.label || entry.title || key;
+            const recipient = entry.user || entry.label || entry.title || key;
             const eventProps = {
                 access_key: key,
                 recipient: recipient,
+                shared_to: recipient,
                 video_title: entry.title || ''
             };
+
+            // Keep recipient available in GA user properties for audience/reporting.
+            if (typeof window.gtag === 'function') {
+                window.gtag('set', 'user_properties', {
+                    shared_to: recipient
+                });
+            }
 
             videoPlayer.addEventListener('play', () => {
                 trackEvent('screening_play', eventProps);
