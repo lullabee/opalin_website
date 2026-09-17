@@ -111,6 +111,19 @@ header {
     padding: 1.25rem 3rem;
 }
 
+.hero-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.header-container nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
 /* Section Hero (Accueil) */
 .hero {
     min-height: 70vh;
@@ -185,6 +198,16 @@ footer {
     min-height: 100vh;
 }
 
+.openings-header {
+    padding: 2.5rem 0 1.25rem;
+}
+
+.openings-title {
+    font-size: clamp(2.2rem, 4vw, 3.25rem);
+    line-height: 1.15;
+    margin-bottom: 0;
+}
+
 .job-hero {
     padding: 3rem 0 2rem;
 }
@@ -214,6 +237,60 @@ footer {
     max-width: 820px;
 }
 
+.job-listings {
+    padding-bottom: 3rem;
+}
+
+.job-accordion {
+    margin-bottom: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.job-accordion summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 1.5rem 1.75rem;
+    transition: background-color 0.2s ease;
+}
+
+.job-accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.job-accordion summary:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.job-accordion[open] summary {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+}
+
+.accordion-header h2 {
+    margin-bottom: 0;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.job-meta {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    text-align: right;
+    max-width: 420px;
+}
+
+.job-accordion-body {
+    padding: 1.4rem 1.75rem 1.75rem;
+}
+
 .job-content {
     padding: 1rem 0 4rem;
 }
@@ -232,9 +309,14 @@ footer {
     backdrop-filter: blur(8px);
 }
 
-.job-card h2 {
+.job-card h2,
+.job-card h3 {
     margin-bottom: 1rem;
     font-size: 1.35rem;
+}
+
+.job-card p {
+    color: var(--text-muted);
 }
 
 .job-list {
