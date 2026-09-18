@@ -13,21 +13,37 @@
       <section class="section shell page-head">
         <p class="eyebrow">Private &middot; not indexed</p>
         <h1>Demo reel</h1>
-        <p class="lede">Recorded runs on real lines. Unlisted - please don't share the link.</p>
+        <p class="lede">
+          Recorded runs on real lines. Unlisted and sealed - please don't share
+          the link.
+        </p>
 
-        <div class="reel">
-          <figure>
-            <div class="reel-slot"></div>
-            <figcaption>TBD &middot; clip, cell, task, date</figcaption>
-          </figure>
-          <figure>
-            <div class="reel-slot"></div>
-            <figcaption>TBD &middot; clip, cell, task, date</figcaption>
-          </figure>
-        </div>
+        <form class="gate" data-gate>
+          <label class="gate-label" for="gate-password">Password</label>
+          <input
+            type="text"
+            name="username"
+            value="demos"
+            autocomplete="username"
+            hidden
+          />
+          <div class="gate-row">
+            <input
+              id="gate-password"
+              type="password"
+              autocomplete="current-password"
+              autofocus
+            />
+            <button class="btn btn-solid" type="submit">Unlock</button>
+          </div>
+          <p class="gate-error" data-error role="alert"></p>
+        </form>
+
+        <div class="mosaic" data-mosaic hidden></div>
       </section>
     </main>
 
     <!-- @footer -->
+    <script type="module" src="/src/demos.js"></script>
   </body>
 </html>

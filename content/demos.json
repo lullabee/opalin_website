@@ -1,0 +1,11 @@
+{
+  "note": "Plaintext source for the demo mosaic. Never published - `bun run seal:demos` encrypts it into src/demos/sealed.json, which is the only version that ships.",
+  "clips": [
+    { "src": "/demos/tote-sort.mp4", "caption": "Tote sorting, mixed SKUs", "span": 2 },
+    { "src": "/demos/tray-kit.mp4", "caption": "Tray kitting, four slots" },
+    { "src": "/demos/returns.mp4", "caption": "Returns triage" },
+    { "src": "/demos/inspection.mp4", "caption": "Inspection and grading" },
+    { "src": "/demos/recovery.mp4", "caption": "Teleop recovery, recorded as a demo", "span": 2 },
+    { "src": "/demos/night-shift.mp4", "caption": "Unattended run, third shift" }
+  ]
+}

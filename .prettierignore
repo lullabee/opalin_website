@@ -1,0 +1,7 @@
+dist
+node_modules
+src/scene/data/yam_chain.json
+src/scene/data/yam_geometry.json
+src/scene/data/pick_demo9.json
+src/scene/data/pick_demo9.eef.json
+content/

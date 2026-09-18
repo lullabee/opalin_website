@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "bake:urdf": "node scripts/bake-urdf.mjs ../opalin/robot_desc/i2rt_yam/linear_gripper/arm.urdf src/scene/data/yam_chain.json",
     "bake:meshes": "node scripts/bake-meshes.mjs ../opalin/robot_desc/i2rt_yam/linear_gripper/assets src/scene/data",
-    "check:fk": "node scripts/fk-check.mjs src/scene/data/pick_demo9.eef.json"
+    "check:fk": "node scripts/fk-check.mjs src/scene/data/pick_demo9.eef.json",
+    "seal:demos": "node scripts/seal-demos.mjs content/demos.json src/demos/sealed.json"
   },
   "dependencies": {
     "three": "0.180.0"

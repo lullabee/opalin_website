@@ -8,6 +8,9 @@ bun install
 bun run dev        # localhost:5173
 bun run build
 bun run check:fk   # gates the hero replay against the recording (keep this green)
+
+DEMOS_PASSWORD=... bun run seal:demos   # re-encrypt the demo mosaic
+bunx prettier --write .                 # same defaults Zed formats with
 ```
 
 ## Endpoints
@@ -16,22 +19,22 @@ Vite is MPA. A route is a directory with an `index.html`; discovery walks nested
 directories, so a new route is just a new folder. Shared markup lives in `src/site/*.html`
 and is inlined at build time by an `<!-- @name -->` comment.
 
-| route                                 | indexed | notes                                          |
-| ------------------------------------- | ------- | ---------------------------------------------- |
-| `/`                                   | yes     | the whole pitch, one page                      |
-| `/careers/`                           | yes     | index of open roles                            |
-| `/careers/teleoperator/`              | yes     | Redwood City, CA and Quebec City               |
-| `/careers/robotics-software-engineer/`| yes     | Paris                                          |
-| `/careers/applied-ai-engineer/`       | yes     | Paris                                          |
-| `/demos-caf9786e1b15275d/`            | no      | unlisted reel, `noindex`, never linked         |
-| `/blog/`                              | no      | scaffold only, unlinked, `noindex`             |
+| route                                  | indexed | notes                              |
+| -------------------------------------- | ------- | ---------------------------------- |
+| `/`                                    | yes     | the whole pitch, one page          |
+| `/careers/`                            | yes     | index of open roles                |
+| `/careers/teleoperator/`               | yes     | Redwood City, CA and Quebec City   |
+| `/careers/robotics-software-engineer/` | yes     | Paris                              |
+| `/careers/applied-ai-engineer/`        | yes     | Paris                              |
+| `/demos-caf9786e1b15275d/`             | no      | password-gated mosaic, `noindex`   |
+| `/blog/`                               | no      | scaffold only, unlinked, `noindex` |
 
 Static files served from `public/`: `/robots.txt`, `/sitemap.xml`, `/favicon.svg`.
 `/og.png` is referenced by the social meta on every page but **has not been captured yet**.
 
-The demos slug is the only thing keeping that route private. It is deliberately **not** in
-`robots.txt` - a `Disallow` line would publish the URL. Only the `noindex` meta and the
-unguessable path protect it.
+The demos route is deliberately **not** in `robots.txt` - a `Disallow` line would publish
+the URL it is meant to hide. The `noindex` meta and the unguessable path keep it out of
+search; the password is what actually protects the content.
 
 Adding a role: new folder under `careers/`, a card on `/careers/`, and a line in
 `public/sitemap.xml` (nothing generates it).
@@ -40,15 +43,32 @@ Adding a role: new folder under `careers/`, a card on `/careers/`, and a line in
 
 Stripped from production builds. All on `/`.
 
-| param                   | effect                                             |
-| ----------------------- | -------------------------------------------------- |
-| `?t=`                   | freeze the hero at that second of the 35.1s loop    |
-| `?azimuth=` `?elevation=` `?zoom=` | override the camera                      |
-| `?speed=`               | override playback rate                             |
+| param                              | effect                                           |
+| ---------------------------------- | ------------------------------------------------ |
+| `?t=`                              | freeze the hero at that second of the 35.1s loop |
+| `?azimuth=` `?elevation=` `?zoom=` | override the camera                              |
+| `?speed=`                          | override playback rate                           |
 
 `window.__cell` is exposed in dev. Every screenshot during the build was captured with
 `?t=`; the reduced-motion and no-WebGL frames go through the same code path, so they cannot
 disagree with the animation.
+
+## The demo mosaic
+
+The clip list lives in plaintext at `content/demos.json`, which is **never published** -
+`bun run seal:demos` encrypts it (PBKDF2, 210k iterations, SHA-256 -> AES-GCM-256) into
+`src/demos/sealed.json`, and only the sealed blob ships. The password is the key, so the
+clip URLs and captions are genuinely absent from the bundle rather than merely hidden
+behind a check. A wrong password fails to decrypt; there is nothing to compare against and
+nothing to bypass.
+
+A successful unlock caches the decrypted manifest in `sessionStorage`, so a reload does not
+re-prompt. Password is `goodrobot`; re-seal after every edit to `content/demos.json`, and
+re-seal with a new `DEMOS_PASSWORD` to rotate it.
+
+The clips themselves are separate files under `public/demos/`. **Those are not encrypted** -
+anyone who learns a clip URL can fetch it directly. If that matters, serve them from
+somewhere with real access control and put signed URLs in the manifest.
 
 ## The hero
 
@@ -99,6 +119,9 @@ These all cost real time to find.
 
 ## House rules
 
+- Prettier with stock defaults, matching Zed's bundled formatter. No `.prettierrc`, so the
+  CLI and format-on-save cannot drift. `.prettierignore` covers generated data and
+  `content/`.
 - Light and dark follow the OS; no toggle.
 - Palette derives from the product's own theme - brand mint `#86cecb`, neutrals at hue 255.
   **One accent hue; do not add a second.** Amber and green are the product's warning and
@@ -109,6 +132,7 @@ These all cost real time to find.
 
 ## Still to do
 
+- Real clips in `public/demos/`; the mosaic currently points at six files that do not exist.
 - Static WebP stills for the no-WebGL fallback, and `/og.png`. Both are `?t=` capture steps.
 - Self-host the four font faces so the two above-the-fold files can be preloaded.
 - Analytics (Plausible or Fathom) and deploy.

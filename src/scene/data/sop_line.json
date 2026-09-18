@@ -4,8 +4,19 @@
   "label": "TRAY KIT V4",
   "mission": [
     { "id": "infeed", "label": "INFEED", "graph": "infeed", "duration": 1.4 },
-    { "id": "identify", "label": "IDENTIFY", "graph": "identify", "duration": 1.9 },
-    { "id": "kit", "label": "KIT", "graph": "kit", "duration": 7.4, "parts": 4 },
+    {
+      "id": "identify",
+      "label": "IDENTIFY",
+      "graph": "identify",
+      "duration": 1.9
+    },
+    {
+      "id": "kit",
+      "label": "KIT",
+      "graph": "kit",
+      "duration": 7.4,
+      "parts": 4
+    },
     { "id": "verify", "label": "VERIFY", "graph": "verify", "duration": 1.9 },
     { "id": "outfeed", "label": "OUTFEED", "graph": "outfeed", "duration": 1.4 }
   ],
@@ -37,7 +48,11 @@
           "skill": "request_sam2_mask",
           "kind": "perception",
           "share": 0.5,
-          "transitions": { "ok": "resolve", "fail": "__fail__", "skip": "retry" }
+          "transitions": {
+            "ok": "resolve",
+            "fail": "__fail__",
+            "skip": "retry"
+          }
         },
         "retry": {
           "label": "RETRY MASK",
@@ -69,7 +84,11 @@
           "skill": "run_policy",
           "kind": "policy",
           "share": 0.34,
-          "transitions": { "ok": "place", "fail": "__fail__", "skip": "correct_pick" }
+          "transitions": {
+            "ok": "place",
+            "fail": "__fail__",
+            "skip": "correct_pick"
+          }
         },
         "correct_pick": {
           "label": "CORRECT PICK",
@@ -82,7 +101,11 @@
           "skill": "run_policy",
           "kind": "policy",
           "share": 0.34,
-          "transitions": { "ok": "home", "fail": "__fail__", "skip": "correct_place" }
+          "transitions": {
+            "ok": "home",
+            "fail": "__fail__",
+            "skip": "correct_place"
+          }
         },
         "correct_place": {
           "label": "CORRECT PLACE",
@@ -107,7 +130,11 @@
           "skill": "verify_slots",
           "kind": "perception",
           "share": 1,
-          "transitions": { "ok": "__end__", "fail": "__fail__", "skip": "rework" }
+          "transitions": {
+            "ok": "__end__",
+            "fail": "__fail__",
+            "skip": "rework"
+          }
         },
         "rework": {
           "label": "REWORK",
