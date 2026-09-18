@@ -1,0 +1,140 @@
+{
+  "note": "A kitting line SOP in the shape the orchestrator runs: a mission of hierarchical nodes, each expanding into a graph of skills. Labels and skill ids are display-length; no cell, arm or episode is named.",
+  "sop_id": "tray-kit-v4",
+  "label": "TRAY KIT V4",
+  "mission": [
+    { "id": "infeed", "label": "INFEED", "graph": "infeed", "duration": 1.4 },
+    { "id": "identify", "label": "IDENTIFY", "graph": "identify", "duration": 1.9 },
+    { "id": "kit", "label": "KIT", "graph": "kit", "duration": 7.4, "parts": 4 },
+    { "id": "verify", "label": "VERIFY", "graph": "verify", "duration": 1.9 },
+    { "id": "outfeed", "label": "OUTFEED", "graph": "outfeed", "duration": 1.4 }
+  ],
+  "graphs": {
+    "infeed": {
+      "start": "advance",
+      "nodes": {
+        "advance": {
+          "label": "ADVANCE TRAY",
+          "skill": "advance_fixture",
+          "kind": "fixture",
+          "share": 0.55,
+          "transitions": { "ok": "seat", "fail": "__fail__" }
+        },
+        "seat": {
+          "label": "CONFIRM SEATED",
+          "skill": "check_fixture",
+          "kind": "fixture",
+          "share": 0.45,
+          "transitions": { "ok": "__end__", "fail": "__fail__" }
+        }
+      }
+    },
+    "identify": {
+      "start": "mask",
+      "nodes": {
+        "mask": {
+          "label": "REQUEST MASK",
+          "skill": "request_sam2_mask",
+          "kind": "perception",
+          "share": 0.5,
+          "transitions": { "ok": "resolve", "fail": "__fail__", "skip": "retry" }
+        },
+        "retry": {
+          "label": "RETRY MASK",
+          "skill": "request_sam2_mask",
+          "kind": "perception",
+          "transitions": { "ok": "resolve", "fail": "__fail__" }
+        },
+        "resolve": {
+          "label": "RESOLVE PARTS",
+          "skill": "resolve_parts",
+          "kind": "perception",
+          "share": 0.5,
+          "transitions": { "ok": "__end__", "fail": "__fail__" }
+        }
+      }
+    },
+    "kit": {
+      "start": "select",
+      "nodes": {
+        "select": {
+          "label": "SELECT PART",
+          "skill": "resolve_parts",
+          "kind": "perception",
+          "share": 0.18,
+          "transitions": { "ok": "pick", "fail": "__fail__" }
+        },
+        "pick": {
+          "label": "PICK",
+          "skill": "run_policy",
+          "kind": "policy",
+          "share": 0.34,
+          "transitions": { "ok": "place", "fail": "__fail__", "skip": "correct_pick" }
+        },
+        "correct_pick": {
+          "label": "CORRECT PICK",
+          "skill": "teleop_step",
+          "kind": "human",
+          "transitions": { "ok": "place", "fail": "__fail__" }
+        },
+        "place": {
+          "label": "PLACE",
+          "skill": "run_policy",
+          "kind": "policy",
+          "share": 0.34,
+          "transitions": { "ok": "home", "fail": "__fail__", "skip": "correct_place" }
+        },
+        "correct_place": {
+          "label": "CORRECT PLACE",
+          "skill": "teleop_step",
+          "kind": "human",
+          "transitions": { "ok": "home", "fail": "__fail__" }
+        },
+        "home": {
+          "label": "HOME",
+          "skill": "go_to_joints",
+          "kind": "fixture",
+          "share": 0.14,
+          "transitions": { "ok": "__end__", "fail": "__fail__" }
+        }
+      }
+    },
+    "verify": {
+      "start": "inspect",
+      "nodes": {
+        "inspect": {
+          "label": "INSPECT TRAY",
+          "skill": "verify_slots",
+          "kind": "perception",
+          "share": 1,
+          "transitions": { "ok": "__end__", "fail": "__fail__", "skip": "rework" }
+        },
+        "rework": {
+          "label": "REWORK",
+          "skill": "teleop_step",
+          "kind": "human",
+          "transitions": { "ok": "__end__", "fail": "__fail__" }
+        }
+      }
+    },
+    "outfeed": {
+      "start": "release",
+      "nodes": {
+        "release": {
+          "label": "RELEASE",
+          "skill": "release_fixture",
+          "kind": "fixture",
+          "share": 0.5,
+          "transitions": { "ok": "index", "fail": "__fail__" }
+        },
+        "index": {
+          "label": "INDEX CONVEYOR",
+          "skill": "advance_fixture",
+          "kind": "fixture",
+          "share": 0.5,
+          "transitions": { "ok": "__end__", "fail": "__fail__" }
+        }
+      }
+    }
+  }
+}

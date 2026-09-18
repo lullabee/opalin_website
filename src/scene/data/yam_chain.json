@@ -1,0 +1,234 @@
+{
+  "root": "base",
+  "joints": [
+    {
+      "name": "joint1",
+      "type": "revolute",
+      "parent": "base",
+      "child": "link1",
+      "xyz": [
+        0,
+        0,
+        0.0669
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "limit": [
+        -2.608,
+        3.1622
+      ]
+    },
+    {
+      "name": "joint2",
+      "type": "revolute",
+      "parent": "link1",
+      "child": "link2",
+      "xyz": [
+        0.0200001,
+        0.0328999,
+        0.0455
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "limit": [
+        0,
+        3.6704
+      ]
+    },
+    {
+      "name": "joint3",
+      "type": "revolute",
+      "parent": "link2",
+      "child": "link3",
+      "xyz": [
+        -0.2761,
+        -0.0637481,
+        6.42598e-7
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "limit": [
+        0,
+        3.1374
+      ]
+    },
+    {
+      "name": "joint4",
+      "type": "revolute",
+      "parent": "link3",
+      "child": "link4",
+      "xyz": [
+        0.241549,
+        0.00204907,
+        0.0599994
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "limit": [
+        -1.5776,
+        1.6962
+      ]
+    },
+    {
+      "name": "joint5",
+      "type": "revolute",
+      "parent": "link4",
+      "child": "link5",
+      "xyz": [
+        0.0703853,
+        0.0287999,
+        0.0403001
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "limit": [
+        -1.5661,
+        1.5791
+      ]
+    },
+    {
+      "name": "joint6",
+      "type": "revolute",
+      "parent": "link5",
+      "child": "gripper",
+      "xyz": [
+        0.0418982,
+        -7.34239e-7,
+        -0.0527495
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "limit": [
+        -2.1368,
+        2.0541
+      ]
+    },
+    {
+      "name": "joint7",
+      "type": "prismatic",
+      "parent": "gripper",
+      "child": "tip_left",
+      "xyz": [
+        0.0545598,
+        -0.0450619,
+        0.0226684
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "limit": [
+        0,
+        0.0475
+      ]
+    },
+    {
+      "name": "joint8",
+      "type": "prismatic",
+      "parent": "gripper",
+      "child": "tip_right",
+      "xyz": [
+        0.05456,
+        0.0450618,
+        -0.0226682
+      ],
+      "rpy": [
+        0,
+        0,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "limit": [
+        -0.0475,
+        0
+      ]
+    },
+    {
+      "name": "joint_tcp",
+      "type": "fixed",
+      "parent": "gripper",
+      "child": "tcp",
+      "xyz": [
+        0.16147,
+        0,
+        0.00385
+      ],
+      "rpy": [
+        0,
+        1.5707963,
+        0
+      ],
+      "axis": null,
+      "limit": null
+    }
+  ],
+  "meshes": {
+    "base": "base",
+    "link1": "link1",
+    "link2": "link2",
+    "link3": "link3",
+    "link4": "link4",
+    "link5": "link5",
+    "gripper": "gripper",
+    "tip_left": "tip_left",
+    "tip_right": "tip_right"
+  }
+}

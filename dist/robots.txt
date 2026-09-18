@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /blog/
+
+Sitemap: https://opalin.ai/sitemap.xml

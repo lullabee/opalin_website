@@ -1,0 +1,45 @@
+{
+  "hz": 15.0,
+  "frames": 99,
+  "duration_s": 6.533,
+  "space": "urdf",
+  "joint_order": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6"
+  ],
+  "encoding": {
+    "joints": "int16 urdf_rad/pi*32767, 6 per frame",
+    "gripper": "int16 0.01mm, 1 per frame"
+  },
+  "gripper_mm": {
+    "min": 17.9,
+    "max": 88.2
+  },
+  "joint_range_deg": [
+    45.6,
+    108.2,
+    80.9,
+    12.7,
+    18.5,
+    46.9
+  ],
+  "max_quant_err_deg": 0.0027,
+  "bytes": 1386,
+  "source": {
+    "session": "2026-07-29_17-01-50_cell-clumsy-octopus_raouf_pick_right_arm_black_boxes_half_full_i2rt",
+    "demo": "demo9.hdf5",
+    "arm": "right",
+    "robot": "i2rt YAM",
+    "recorded_hz": 30,
+    "window_s": [
+      0.0,
+      6.6
+    ],
+    "instruction": "pick the small black cardboard box with the right arm",
+    "conversion": "py_libs.arm_scene.cell_stored_to_urdf_rad"
+  }
+}

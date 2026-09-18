@@ -1,0 +1,231 @@
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root {
+  --shell: min(1180px, 100%);
+  --gutter: clamp(20px, 4vw, 40px);
+  --rhythm: clamp(44px, 6vw, 78px);
+  --nav-h: 60px;
+
+  --display: 'Archivo', system-ui, sans-serif;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 15px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg { max-width: 100%; }
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  text-wrap: balance;
+  margin: 0;
+}
+
+h1 { font-size: clamp(34px, 5.1vw, 60px); }
+h2 { font-size: clamp(27px, 3.6vw, 42px); }
+h3 { font-size: clamp(19px, 1.7vw, 23px); }
+
+p { margin: 0; }
+
+.shell {
+  width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.eyebrow {
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.lede {
+  max-width: 46ch;
+  font-size: clamp(16px, 1.3vw, 18px);
+  color: var(--ink-2);
+}
+
+.prose { max-width: 52ch; color: var(--ink-2); }
+
+.accent { color: var(--accent-ink); }
+
+.num { font-variant-numeric: tabular-nums; }
+
+/* wordmark */
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+}
+
+.wordmark-mark {
+  height: 21px;
+  width: auto;
+  color: var(--accent-ink);
+}
+
+.wordmark-type {
+  height: 12.5px;
+  width: auto;
+}
+
+/* nav */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: var(--nav-h);
+  background: color-mix(in oklab, var(--bg) 82%, transparent);
+  backdrop-filter: blur(12px) saturate(1.4);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-inner {
+  width: var(--shell);
+  height: 100%;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.nav-brand { display: inline-flex; text-decoration: none; }
+
+.nav-links {
+  display: flex;
+  gap: clamp(16px, 2.4vw, 30px);
+  font: 500 11.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--ink-2);
+  transition: color 150ms ease;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+/* buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding-inline: 20px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font: 500 11.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.btn-solid {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn-solid:hover { background: var(--accent-deep); color: var(--bg); }
+
+.btn-ghost {
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+
+.btn-ghost:hover { border-color: var(--accent-ink); color: var(--accent-ink); }
+
+/* sections */
+
+.section {
+  padding-block: var(--rhythm);
+  border-top: 1px solid var(--line);
+}
+
+.section-sunk {
+  background: var(--sunk);
+}
+
+.section-ink {
+  background: var(--ink);
+  color: var(--bg);
+  border-top: 0;
+}
+
+.section-ink .eyebrow,
+.section-ink .prose { color: color-mix(in oklab, var(--bg) 72%, var(--ink)); }
+
+.section-ink .accent { color: var(--accent-on-ink); }
+
+/* footer */
+
+.footer {
+  background: var(--sunk);
+  border-top: 1px solid var(--line);
+  padding-block: 26px;
+}
+
+.footer-inner {
+  width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 28px;
+  font: 400 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.footer-inner a { text-decoration: none; transition: color 150ms ease; }
+.footer-inner a:hover { color: var(--ink); }
+.footer-brand { margin-right: auto; }
+.footer-brand .wordmark-mark { height: 17px; }
+.footer-brand .wordmark-type { height: 10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
