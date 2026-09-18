@@ -25,29 +25,27 @@
   --geo-shadow: oklch(0.22 0.014 255 / 0.13);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
+:root[data-theme="dark"] {
+  color-scheme: dark;
 
-    --bg: oklch(0.185 0.013 255);
-    --surface: oklch(0.225 0.014 255);
-    --sunk: oklch(0.145 0.012 255);
-    --ink: oklch(0.965 0.004 255);
-    --ink-2: oklch(0.74 0.012 255);
-    --line: oklch(0.34 0.014 255);
-    --line-2: oklch(0.42 0.016 255);
+  --bg: oklch(0.185 0.013 255);
+  --surface: oklch(0.225 0.014 255);
+  --sunk: oklch(0.145 0.012 255);
+  --ink: oklch(0.965 0.004 255);
+  --ink-2: oklch(0.74 0.012 255);
+  --line: oklch(0.34 0.014 255);
+  --line-2: oklch(0.42 0.016 255);
 
-    --accent-ink: #86cecb;
-    --accent-deep: oklch(0.88 0.06 192.5);
-    --wash: oklch(0.26 0.04 192.5);
-    --accent-on-ink: oklch(0.45 0.072 192.5);
+  --accent-ink: #86cecb;
+  --accent-deep: oklch(0.88 0.06 192.5);
+  --wash: oklch(0.26 0.04 192.5);
+  --accent-on-ink: oklch(0.45 0.072 192.5);
 
-    --warning: oklch(0.82 0.135 82);
-    --success: oklch(0.74 0.15 158);
+  --warning: oklch(0.82 0.135 82);
+  --success: oklch(0.74 0.15 158);
 
-    --geo-fill: oklch(0.245 0.014 255);
-    --geo-line: oklch(0.72 0.012 255);
-    --geo-grid: oklch(0.32 0.012 255);
-    --geo-shadow: oklch(0.08 0.01 255 / 0.5);
-  }
+  --geo-fill: oklch(0.245 0.014 255);
+  --geo-line: oklch(0.72 0.012 255);
+  --geo-grid: oklch(0.32 0.012 255);
+  --geo-shadow: oklch(0.08 0.01 255 / 0.5);
 }

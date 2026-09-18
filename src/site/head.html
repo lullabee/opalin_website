@@ -4,6 +4,18 @@
   content="width=device-width, initial-scale=1, viewport-fit=cover"
 />
 <meta name="color-scheme" content="light dark" />
+<script>
+  (() => {
+    const saved = localStorage.getItem("opalin-theme");
+    const theme =
+      saved === "light" || saved === "dark"
+        ? saved
+        : matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+    document.documentElement.dataset.theme = theme;
+  })();
+</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,3 +25,4 @@
 />
 <link rel="stylesheet" href="/src/styles/tokens.css" />
 <link rel="stylesheet" href="/src/styles/base.css" />
+<script type="module" src="/src/theme.js"></script>

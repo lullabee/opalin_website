@@ -167,6 +167,59 @@ p {
   color: var(--ink);
 }
 
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent-ink);
+  color: var(--accent-ink);
+  background: var(--wash);
+}
+
+.theme-icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+[data-theme="light"] .theme-icon-sun {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .nav-inner {
+    gap: 12px;
+  }
+
+  .nav-links {
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+}
+
 /* buttons */
 
 .btn {
