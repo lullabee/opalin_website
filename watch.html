@@ -199,12 +199,21 @@
                 videoCategory.hidden = false;
             }
             if (entry.poster) videoPlayer.poster = entry.poster;
-            videoPlayer.src = entry.src;
 
-            videoPlayer.addEventListener('error', () => {
+            // Register before assigning src so a fast first-load failure cannot
+            // escape the handler. Retry once for transient CDN/network errors.
+            let retried = false;
+            videoPlayer.onerror = () => {
+                if (!retried) {
+                    retried = true;
+                    videoPlayer.load();
+                    return;
+                }
                 fail('Video unavailable',
                     'The video for this link could not be loaded. Contact the person who shared it with you.');
-            });
+            };
+            videoPlayer.src = entry.src;
+            videoPlayer.load();
             // "recipient" is the human label you set in the generator; it makes
             // GA reports readable ("Jane at Acme") instead of a random key.
             const recipient = entry.label || entry.title || key;
