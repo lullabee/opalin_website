@@ -1,18 +1,18 @@
 :root {
   color-scheme: light;
 
-  --bg: oklch(0.975 0.004 255);
+  --bg: oklch(0.955 0.008 75);
   --surface: oklch(1 0 0);
-  --sunk: oklch(0.945 0.006 255);
+  --sunk: oklch(0.935 0.008 75);
   --ink: oklch(0.22 0.014 255);
   --ink-2: oklch(0.48 0.012 255);
-  --line: oklch(0.885 0.008 255);
-  --line-2: oklch(0.83 0.01 255);
+  --line: oklch(0.885 0.008 75);
+  --line-2: oklch(0.83 0.01 75);
 
   --accent: #86cecb;
-  --accent-ink: oklch(0.52 0.072 192.5);
-  --accent-deep: oklch(0.45 0.072 192.5);
-  --wash: oklch(0.945 0.03 192.5);
+  --accent-ink: oklch(0.52 0.085 205);
+  --accent-deep: oklch(0.45 0.085 205);
+  --wash: oklch(0.935 0.03 205);
   --accent-on-ink: #86cecb;
   --on-accent: oklch(0.16 0.02 255);
 
@@ -37,9 +37,9 @@
   --line-2: oklch(0.42 0.016 255);
 
   --accent-ink: #86cecb;
-  --accent-deep: oklch(0.88 0.06 192.5);
-  --wash: oklch(0.26 0.04 192.5);
-  --accent-on-ink: oklch(0.45 0.072 192.5);
+  --accent-deep: oklch(0.88 0.06 200);
+  --wash: oklch(0.26 0.04 205);
+  --accent-on-ink: oklch(0.45 0.085 205);
 
   --warning: oklch(0.82 0.135 82);
   --success: oklch(0.74 0.15 158);
