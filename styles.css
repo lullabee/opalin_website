@@ -115,6 +115,19 @@ header {
     margin-top: 2rem;
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hero-body {
+    max-width: 900px;
+    margin: 1.5rem auto 0;
+    color: var(--text-muted);
+}
+
+.hero-cta-copy {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
 }
 
 .header-container nav {
@@ -666,6 +679,11 @@ footer {
     .hero {
         min-height: 50vh;
         padding: 2rem 0;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
     }
     
     .contact-card {
