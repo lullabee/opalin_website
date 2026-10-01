@@ -113,7 +113,8 @@ p {
 .wordmark-mark {
   height: 21px;
   width: auto;
-  color: var(--accent-ink);
+  /* brighter than --accent-ink: the logo isn't text, so it can sit closer to the brand teal */
+  color: var(--logo-mark);
 }
 
 .wordmark-type {

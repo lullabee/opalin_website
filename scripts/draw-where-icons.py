@@ -319,25 +319,59 @@ def returns():
     return s
 
 
+def open_bin(s, x0, y0, w, d, h, contents=None, rim=INK):
+    """Open-top container drawn back wall first, then its contents, then the front walls over them."""
+    x1, y1 = x0 + w, y0 + d
+    P = iso
+    s.fill([P(x0, y0, h), P(x1, y0, h), P(x1, y0, 0), P(x1, y1, 0), P(x0, y1, 0), P(x0, y1, h)])
+    s.line([P(x0, y1, h), P(x0, y0, h), P(x1, y0, h)], color=rim)
+    s.line([P(x0, y0, h), P(x0, y0, h * 0.35)], opacity=0.5, passes=1)
+    s.line([P(x0, y0, h * 0.35), P(x1, y0, h * 0.35)], opacity=0.3, passes=1)
+    s.line([P(x0, y0, h * 0.35), P(x0, y1, h * 0.35)], opacity=0.3, passes=1)
+    if contents:
+        contents()
+    s.fill([P(x1, y0, h), P(x1, y1, h), P(x1, y1, 0), P(x1, y0, 0)])
+    s.fill([P(x0, y1, h), P(x1, y1, h), P(x1, y1, 0), P(x0, y1, 0)])
+    s.line([P(x1, y0, h), P(x1, y1, h), P(x0, y1, h)], color=rim)
+    s.line([P(x1, y0, h), P(x1, y0, 0), P(x1, y1, 0), P(x0, y1, 0), P(x0, y1, h)])
+    s.line([P(x1, y1, h), P(x1, y1, 0)])
+
+
 def kitting():
     s = Sketch(22)
-    s.shadow(-10, 10, 80, 22)
-    box(s, -64, -20, 0, 92, 60, 10)
-    # compartments on the tray top
-    for gx in (-64 + 92 / 3, -64 + 2 * 92 / 3):
-        s.line([iso(gx, -20, 10), iso(gx, 40, 10)], opacity=0.7)
-    s.line([iso(-64, 10, 10), iso(28, 10, 10)], opacity=0.7)
-    # parts already placed
-    box(s, -58, -14, 10, 16, 14, 7)
-    box(s, -28, 16, 10, 14, 12, 9)
-    cylinder(s, -46, 24, 10, 6, 8)
-    # target compartment, dashed teal
-    tgt = [iso(-64 + 2 * 92 / 3 + 4, 14, 10.5), iso(24, 14, 10.5), iso(24, 36, 10.5), iso(-64 + 2 * 92 / 3 + 4, 36, 10.5)]
-    s.line(tgt, close=True, color=TEAL, layer=s.front, width=1.1, passes=1, amp=0.1, dash="3 3")
-    wrist = (236, 50)
-    arm(s, base=(272, 174), shoulder=(272, 152), elbow=(266, 66), wrist=wrist, holding=True)
-    drop = iso(12, 25, 12)
-    demos(s, bezier((wrist[0], wrist[1] + 31), (230, 60), (drop[0] + 30, drop[1] - 50), drop), seed=5)
+    s.shadow(-20, -10, 90, 26)
+    # three source bins along the back, each holding a different part
+    BW, BD, BH = 24, 20, 14
+    bins = [(-54, -50), (-54, -24), (-54, 2)]
+    parts = [
+        lambda x, y: [box(s, x + 4, y + 3, 6, 7, 7, 7), box(s, x + 13, y + 9, 6, 7, 7, 7)],
+        lambda x, y: [cylinder(s, x + 8, y + 7, 6, 4, 9), cylinder(s, x + 16, y + 12, 6, 4, 9)],
+        lambda x, y: [circle(s, *iso(x + 8, y + 8, 13), 4.5, fill="#fff"), circle(s, *iso(x + 16, y + 12, 12), 4.5, fill="#fff")],
+    ]
+    # back to front, so each bin's front wall sits over the one behind it
+    for i, ((x, y), fill_bin) in enumerate(zip(bins, parts)):
+        open_bin(s, x, y, BW, BD, BH, contents=lambda x=x, y=y, f=fill_bin: f(x, y), rim=TEAL if i == 1 else INK)
+    # kit pouch in front, with two items already packed
+    KX, KY, KW, KD, KH = -6, -14, 34, 26, 13
+
+    def packed():
+        box(s, KX + 4, KY + 4, 4, 8, 8, 8)
+        circle(s, *iso(KX + 24, KY + 9, 11), 4.5, fill="#fff")
+
+    open_bin(s, KX, KY, KW, KD, KH, contents=packed)
+    # drop spot inside the kit, dashed teal
+    spot = [iso(KX + 14, KY + 13, KH), iso(KX + 24, KY + 13, KH), iso(KX + 24, KY + 22, KH), iso(KX + 14, KY + 22, KH)]
+    s.line(spot, close=True, color=TEAL, width=1.0, passes=1, amp=0.1, layer=s.front, dash="2.5 2.5")
+    # the arm has picked a part from the middle bin and carries it to the kit
+    pick = iso(-54 + BW / 2, -24 + BD / 2, BH + 4)
+    drop = iso(KX + 19, KY + 17, KH + 2)
+    wrist = ((pick[0] + drop[0]) / 2 + 4, min(pick[1], drop[1]) - 50)
+    held = (wrist[0], wrist[1] + 31)
+    bx = drop[0] + 46
+    arm(s, base=(bx, 176), shoulder=(bx, 154), elbow=(bx + 2, wrist[1] + 4), wrist=wrist, holding=True)
+    demos(s, bezier(pick, (pick[0] + 4, held[1] - 6), (held[0] - 24, held[1] - 4), held), count=4, spread=8, seed=5)
+    s.line([bezier(held, (held[0] + 6, held[1] + 20), (drop[0] + 14, drop[1] - 24), drop)(i / 30) for i in range(31)],
+           color=TEAL, width=1.0, passes=1, amp=0.1, layer=s.front, dash="2 3", opacity=0.75)
     return s
 
 
@@ -384,15 +418,18 @@ def beauty():
         cylinder(s, x, y, 0, r, h, fill=f, stroke=st, width=1.1 if hot else 1.0)
         cylinder(s, x, y, h, r * 0.45, neck, fill=f, stroke=st)
         cylinder(s, x, y, h + neck, r * 0.6, 4, fill="#fff", stroke=st)
-    # check mark above the highlighted bottle
+    # the arm lifts the checked bottle by its cap for a closer look
     x, y, r, h, neck = spots[3]
-    cx, cy = iso(x, y, h + neck + 26)
-    circle(s, cx, cy, 11, color=TEAL, width=1.2)
-    s.line([(cx - 5, cy + 0.5), (cx - 1.5, cy + 4), (cx + 5.5, cy - 4)], color=TEAL, width=1.4, passes=1, amp=0.1, layer=s.front)
-    # scan brackets around the checked bottle
+    cap_x, cap_y = iso(x, y, h + neck + 4)
+    wrist = (cap_x, cap_y - 24)
+    arm(s, base=(cap_x + 66, 182), shoulder=(cap_x + 66, 160), elbow=(cap_x + 60, wrist[1] - 8), wrist=wrist, open_grip=True)
+    # check mark beside it, and scan brackets around the bottle
+    cx, cy = cap_x - 30, cap_y - 6
+    circle(s, cx, cy, 10, color=TEAL, width=1.2)
+    s.line([(cx - 4.5, cy + 0.5), (cx - 1.3, cy + 3.6), (cx + 5, cy - 3.6)], color=TEAL, width=1.4, passes=1, amp=0.1, layer=s.front)
     bx0, by0 = iso(x, y, h + neck + 8)
     bx1, by1 = iso(x, y, -4)
-    for sx, sy, px, py in ((1, 1, bx0 - 18, by0), (-1, 1, bx0 + 18, by0), (1, -1, bx1 - 18, by1), (-1, -1, bx1 + 18, by1)):
+    for sx, sy, px, py in ((1, 1, bx0 - 18, by0), (1, -1, bx1 - 18, by1), (-1, -1, bx1 + 18, by1)):
         s.line([(px, py + sy * 7), (px, py), (px + sx * 7, py)], color=TEAL, width=1.1, passes=1, amp=0.1, layer=s.front)
     return s
 
