@@ -322,6 +322,10 @@ footer {
     backdrop-filter: blur(8px);
 }
 
+.job-card-full-width {
+    grid-column: 1 / -1;
+}
+
 .job-card h2,
 .job-card h3 {
     margin-bottom: 1rem;
