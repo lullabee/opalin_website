@@ -332,8 +332,24 @@ footer {
     font-size: 1.35rem;
 }
 
+.job-card h4 {
+    margin: 1.5rem 0 0.75rem;
+    font-size: 0.98rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary-color);
+}
+
 .job-card p {
     color: var(--text-muted);
+}
+
+.job-card strong {
+    color: var(--text-white);
+}
+
+.job-inline-meta {
+    margin: 0 0 0.5rem;
 }
 
 .job-list {
